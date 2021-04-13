@@ -13,18 +13,18 @@ if(isset($_POST['submit'])){
     }
 ?>
 
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <head>
 <title>Form submission</title>
 </head>
 <body>
 
 <form action="" method="post">
-First Name: <input type="text" name="from_name"><br>
+Name: <input type="text" name="from_name"><br>
 Email: <input type="text" name="email"><br>
 Message:<br><textarea rows="5" name="message" cols="30"></textarea><br>
 <input type="submit" name="submit" value="Submit">
 </form>
 
 </body>
-</html> 
+</html>  -->
