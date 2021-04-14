@@ -34,6 +34,17 @@
   * Author: BootstrapMade.com
   * License: https://bootstrapmade.com/license/
   ======================================================== -->
+  
+
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/emailjs-com@2/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function() {
+            // https://dashboard.emailjs.com/admin/integration
+            emailjs.init('user_axZ84vfqKmBmhwME3TDJM');
+        })();
+    </script>
+    
+
 </head>
 
 <body>
@@ -628,40 +639,55 @@
           </div>
         </div>
       </div>
+      
+      <script type="text/javascript">
+      window.onload = function() {
+        document.getElementById('contact-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            // generate a five digit number for the contact_number variable
+            this.contact_number.value = Math.random() * 100000 | 0;
+            // these IDs from the previous steps
+            emailjs.sendForm('service_vr1tz1q', 'contact_form', this)
+                .then(function() {
+                    console.log('SUCCESS!');
+                }, function(error) {
+                    console.log('FAILED...', error);
+                });
+        });
+      }
+      </script>
 
-      <form action="forms/contact.php" method="post" role="form" class="php-email-form mt-4">
+      <form id="contact-form" class="php-email-form mt-4">
         <div class="row">
           <div class="col-md-6 form-group">
-            <input type="text" name="name" class="form-control" id="name" placeholder="Your Name" required>
+            <input type="hidden" name="contact_number">
+            <input type="text" name="user_name" class="form-control" id="name" placeholder="Your Name" required>
           </div>
           <div class="col-md-6 form-group mt-3 mt-md-0">
-            <input type="email" class="form-control" name="email" id="email" placeholder="Your Email" required>
+            <input type="email" class="form-control" name="user_email" id="email" placeholder="Your Email" required>
           </div>
         </div>
-        <div class="form-group mt-3">
+        <!-- <div class="form-group mt-3">
           <input type="text" class="form-control" name="subject" id="subject" placeholder="Subject" required>
-        </div>
+        </div> -->
         <div class="form-group mt-3">
           <textarea class="form-control" name="message" rows="5" placeholder="Message" required></textarea>
         </div>
-        <div class="my-3">
-          <div class="loading">Loading</div>
-          <div class="error-message"></div>
+        <!-- <div class="my-3">
           <div class="sent-message">Your message has been sent. Thank you!</div>
-        </div>
-        <div class="text-center"><button type="submit">Send Message</button></div>
+        </div> -->
+        <div class="text-center"><button type="submit" value="Send" onclick="myFunction()">Send Message</button></div>
+        <br>
+        <p id="demo"></p>
+        <script>
+          function myFunction() {
+            document.getElementById("demo").innerHTML = "Your message has been sent. Thank you!";
+          }
+        </script>
       </form>
 
     </div>
   </section><!-- End Contact Section -->
-
-  <div class="credits">
-    <!-- All the links in the footer should remain intact. -->
-    <!-- You can delete the links only if you purchased the pro version. -->
-    <!-- Licensing information: https://bootstrapmade.com/license/ -->
-    <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/personal-free-resume-bootstrap-template/ -->
-    Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
-  </div>
 
   <!-- Vendor JS Files -->
   <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
