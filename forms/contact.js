@@ -7,6 +7,7 @@ window.onload = function() {
         emailjs.sendForm('service_vr1tz1q', 'contact_form', this)
             .then(function() {
                 console.log('SUCCESS!');
+                document.getElementById("contact-form").reset();
             }, function(error) {
                 console.log('FAILED...', error);
             });
