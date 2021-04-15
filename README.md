@@ -1,3 +1,3 @@
 # 7enTropy7.github.io
 
-My portfolio
+[**Click Here**](https://7enTropy7.github.io) to view my portfolio
