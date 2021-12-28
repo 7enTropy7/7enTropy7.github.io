@@ -658,6 +658,14 @@ section .container {
   border: 2px solid #18d26e;
 }
 
+.resume .pic{
+  position: relative;
+  left: 40px;
+  top:40px;
+  width: 80%;
+  height: auto;
+}
+
 /*--------------------------------------------------------------
 # Services
 --------------------------------------------------------------*/
