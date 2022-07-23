@@ -664,6 +664,19 @@ section .container {
   height: auto;
 }
 
+.resume .button {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.12);
+  transition: ease-in-out 0.3s;
+  display: inline-block;
+  border: none;
+}
+
+.resume .button:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+
 /*--------------------------------------------------------------
 # Services
 --------------------------------------------------------------*/
