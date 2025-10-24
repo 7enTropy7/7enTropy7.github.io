@@ -82,52 +82,77 @@ class SnakeGame {
                 case 3: nextX--; break; // left
             }
             
-            // Score based on distance to food
+            // Score based on distance to food (Manhattan distance)
             const newDistance = Math.abs(nextX - food.x) + Math.abs(nextY - food.y);
             const currentDistance = Math.abs(head.x - food.x) + Math.abs(head.y - food.y);
             
             if (newDistance < currentDistance) {
-                score += 100; // Moving towards food
+                score += 200; // Strong bonus for moving towards food
             } else if (newDistance > currentDistance) {
-                score -= 50; // Moving away from food
+                score -= 100; // Penalty for moving away from food
             }
             
-            // Bonus for moving towards food direction
-            if ((action === 0 && dy < 0) || (action === 1 && dx > 0) || 
-                (action === 2 && dy > 0) || (action === 3 && dx < 0)) {
-                score += 50;
+            // Strong bonus for moving in the primary direction towards food
+            const primaryDirectionX = dx !== 0 ? (dx > 0 ? 1 : 3) : -1; // right or left
+            const primaryDirectionY = dy !== 0 ? (dy > 0 ? 2 : 0) : -1; // down or up
+            
+            // Prioritize the direction that reduces the larger distance component
+            if (Math.abs(dx) > Math.abs(dy)) {
+                // Horizontal distance is larger, prioritize horizontal movement
+                if (action === primaryDirectionX) {
+                    score += 150; // Strong bonus for primary horizontal direction
+                }
+            } else if (Math.abs(dy) > Math.abs(dx)) {
+                // Vertical distance is larger, prioritize vertical movement
+                if (action === primaryDirectionY) {
+                    score += 150; // Strong bonus for primary vertical direction
+                }
+            } else {
+                // Equal distances, prefer the direction that's more aligned
+                if (action === primaryDirectionX || action === primaryDirectionY) {
+                    score += 100; // Bonus for either primary direction
+                }
             }
             
-            // Avoid repetitive actions
+            // Small bonus for continuing in the same direction (reduces zigzagging)
             if (action === this.lastAction) {
-                score -= 20;
+                score += 30;
             }
             
-            // Bonus for actions that keep snake in center area
-            const centerX = this.tileCount / 2;
-            const centerY = this.tileCountY / 2;
-            const distanceFromCenter = Math.abs(nextX - centerX) + Math.abs(nextY - centerY);
-            score += (20 - distanceFromCenter);
+            // Only prevent loops if we're truly stuck (much higher threshold)
+            if (this.lastAction === bestAction) {
+                this.consecutiveActions++;
+                if (this.consecutiveActions > 15) { // Increased from 5 to 15
+                    // Only force change if we have alternatives that are still good
+                    const alternatives = safeActions.filter(a => a !== bestAction);
+                    if (alternatives.length > 0) {
+                        // Check if any alternative is also moving towards food
+                        const goodAlternatives = alternatives.filter(alt => {
+                            let altX = head.x, altY = head.y;
+                            switch(alt) {
+                                case 0: altY--; break;
+                                case 1: altX++; break;
+                                case 2: altY++; break;
+                                case 3: altX--; break;
+                            }
+                            const altDistance = Math.abs(altX - food.x) + Math.abs(altY - food.y);
+                            return altDistance <= currentDistance;
+                        });
+                        
+                        if (goodAlternatives.length > 0) {
+                            bestAction = goodAlternatives[Math.floor(Math.random() * goodAlternatives.length)];
+                            this.consecutiveActions = 0;
+                        }
+                    }
+                }
+            } else {
+                this.consecutiveActions = 0;
+            }
             
             if (score > bestScore) {
                 bestScore = score;
                 bestAction = action;
             }
-        }
-        
-        // Prevent getting stuck in loops
-        if (this.lastAction === bestAction) {
-            this.consecutiveActions++;
-            if (this.consecutiveActions > 5) {
-                // Force a different action
-                const alternatives = safeActions.filter(a => a !== bestAction);
-                if (alternatives.length > 0) {
-                    bestAction = alternatives[Math.floor(Math.random() * alternatives.length)];
-                    this.consecutiveActions = 0;
-                }
-            }
-        } else {
-            this.consecutiveActions = 0;
         }
         
         this.lastAction = bestAction;
