@@ -244,4 +244,23 @@
     }
   });
 
+  /**
+   * Play looping videos only while they are on screen
+   */
+  let videoObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      let video = entry.target;
+      if (entry.isIntersecting) {
+        let playing = video.play();
+        if (playing) playing.catch(() => {});
+      } else {
+        video.pause();
+      }
+    });
+  }, {
+    rootMargin: '200px'
+  });
+
+  select('video[autoplay]', true).forEach(video => videoObserver.observe(video));
+
 })()
