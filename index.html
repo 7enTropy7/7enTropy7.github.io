@@ -14,7 +14,9 @@
   <link href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAAAXNSR0IArs4c6QAABC5JREFUaEPtWU1u20YU/h5FiWo3dU5QBaboZhUbWQe1N9naOUGUE1Q5QFEFPUCUE9Q+QeVtNlHQdRFr5ZiiYecEkTeJKFN8xVCWQFJDckY/NQJoAG+sN+993/vjzBvCd77oO8ePDYH7juDqInBV26qOSods0BEYW0D0t3tH8AzAAIQBhdwZVsaneHg9WAX5pQlULraPiOg3APtagAgdDvlktHPZ0dqXEl6YQLVv7zPjD23g82i7RHg9rHvdRYgsRMBy7TcAmosYzNnT9h3vla5OPQJXtS3r1vw7x+s9YnRgoDtmGtw6fZH7KLv13RLxFkLsM+EIwGMpUELHN4OXOvWhTmAC/n2sMGcYGHRijEut4aNP1yoerJ7/UmMjaINwKJE/88vBgSoJZQKWawvwyUJlfCYDjUXzN6qjEMcg/JwgIiJR956rOEOJgOVut4Go08RXzy8H+6qeygQziawo4FRa8VvfuSyss0ICd91GeD8J3vGmPV7FUYUylmuLekmQIMJBUXQLCcylDuOzXwl2l/Z8mpKIxMg8S6VT13e8gzz2uQTuPlKi68yWilcK3Z0hIIs2Mz/P+9jlErAu7E68U4huM3L6jUUBquxL2wTj1N/xROvN6LxZv0yK60vC+2PzYbxVls+3nxgm/Q7Gs0iO8C4M+M/bR5f/ytSqyEctthRcxff75eBBVspmRqDq1hsM/iumqOfHCjcCU6J/APyQAvstHPPTNAkd+XRBE+jl0Okfy5ySSSAdSmK8Hu54rakSq293wNIPkYjEqV9Phl1Hvnpht5iic9Zk5aRRNgHXFr3516mOdPFarv1V4v2p+Dff8X6Me0xHXlLMH3zHk5528wh8jB8bQtDe9GwjgOkA0pUXZycDLOxP15nveHt6KeTanCgkx0uQ1UmJiIBuyhXYn2VGVhOyChToFKWwoStfZH9pAjNQK26jsyax7ghkRW5V//9fIrAqsDI9GwKqHlhXFFTt530HctvouoBviljXA+uKxCaFVD2wiUCGB1QduHQXUjWkW1uqejcE5jyVc3+V3ndTx3TdSKlHQAJMBihvDCId06QGBYKADlH1K2XqThwZmr/4iwvstV8e781NEaIpR+kjQLVE3RJe+XWvHf/f3J0YSAwU4rLZU4n0xVpAI7SMwDwRo5VK3z4khpgUiKek1OJrJmoagdkTP4Rm8JiYxXw1CX6ya8CExqjunQrPh2bwghiz4YEQSA8UlAhgMhcS4/Kf1tXrFfXe+OWgpj0XEsplOZtjVHhb/nAxv0lZdqnRYoyESJXMSEwHT1bfbmIS/izZGxBaIufl9ZNgesPMjaJHwMLpdKQyekI1m6nnoR7A3RDGcXzcEj0nMR8xRY8hs2dWYnTHRJ247KTb3DYBErLT6EXPVMNK0FaZgKsRUEzW+xDbELgPr6u10ftGpmj/P8wLmU8twFVCAAAAAElFTkSuQmCC" rel="icon"/>
 
   <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <!-- Vendor CSS Files -->
   <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -58,7 +60,7 @@
       <h1><a href="index.html">Unnikrishnan Menon</a></h1>
       <!-- Uncomment below if you prefer to use an image logo -->
       <!-- <a href="index.html" class="mr-auto"><img src="assets/img/logo.jpeg" alt="" class="img-fluid" width="200" height="200" loading="lazy" decoding="async"></a> -->
-      <h2 style="color:rgb(250, 250, 250)"><span class="typing" color:#1460da"></span></h2>
+      <h2><span class="typing"></span></h2>
       <nav id="navbar" class="navbar">
         <ul>
           <li><a class="nav-link active" href="#header">Home</a></li>
@@ -421,11 +423,9 @@
 
       <div class="section-title">
         <h2>Resume</h2>
-        <div class="resume">
-          <button class="button" onclick="window.open('resume/Unnikrishnan_Resume.pdf')"><br>
-            <p><a style="color:rgb(248, 6, 6)">View My Resume</a></p>
-          </button>
-        </div>
+        <a class="btn-accent" href="resume/Unnikrishnan_Resume.pdf" target="_blank" rel="noopener">
+          <i class="bi bi-file-earmark-arrow-down"></i> View My Resume
+        </a>
       </div>
 
       <div class="row">
@@ -437,10 +437,10 @@
             <p><em>Raven Protocol Pte Ltd., Singapore</em></p>
             <p>
             <ul>
-              <!-- <li><p align="justify"><a href="https://github.com/ravenprotocol/ravenverse" style="color: rgb(255, 255, 255)" target="_blank">Revamped the Ravenverse ecosystem by introducing Selective-Participation, a feature that lets Providers stake Raven Tokens and participate in specific ongoing Requester Graphs and get rewards. Handled various edge-cases like computation of failed subgraphs, disconnection, token stashing, re-proportioning op shares etc.</a></p></li> -->
-              <li><p align="justify"><a href="https://github.com/ravenprotocol/ravenverse" style="color: rgb(255, 255, 255)" target="_blank">Implemented Transformer and GPT-2 based Chatbot on Ravenverse from scratch using the Requester libraries (Ravop & RavDL).</a></p></li>
-              <li><p align="justify"><a href="https://github.com/ravenprotocol/ravpy" style="color: rgb(255, 255, 255)" target="_blank">Enhanced the Provider library (Ravpy) for Pytorch Backend compatibility with GPU acceleration support during model training.</a></p></li>
-              <li><p align="justify"><a href="https://github.com/ravenprotocol/ravdl" style="color: rgb(255, 255, 255)" target="_blank">Developing a Functional API for RavDL v2 that offers more flexibility and control over the DL layers.</a></p></li>
+              <!-- <li><p align="justify"><a href="https://github.com/ravenprotocol/ravenverse" class="link-plain" target="_blank">Revamped the Ravenverse ecosystem by introducing Selective-Participation, a feature that lets Providers stake Raven Tokens and participate in specific ongoing Requester Graphs and get rewards. Handled various edge-cases like computation of failed subgraphs, disconnection, token stashing, re-proportioning op shares etc.</a></p></li> -->
+              <li><p align="justify"><a href="https://github.com/ravenprotocol/ravenverse" class="link-plain" target="_blank">Implemented Transformer and GPT-2 based Chatbot on Ravenverse from scratch using the Requester libraries (Ravop & RavDL).</a></p></li>
+              <li><p align="justify"><a href="https://github.com/ravenprotocol/ravpy" class="link-plain" target="_blank">Enhanced the Provider library (Ravpy) for Pytorch Backend compatibility with GPU acceleration support during model training.</a></p></li>
+              <li><p align="justify"><a href="https://github.com/ravenprotocol/ravdl" class="link-plain" target="_blank">Developing a Functional API for RavDL v2 that offers more flexibility and control over the DL layers.</a></p></li>
             </ul>
             </p>
           </div>
@@ -450,12 +450,12 @@
             <p><em>Raven Protocol Pte Ltd., Singapore</em></p>
             <p>
             <ul>
-              <li><p align="justify"><a href="https://github.com/ravenprotocol/ravdl" style="color: rgb(255, 255, 255)" target="_blank">Added support for saving/loading Deep Learning models in the Open Neural Network Exchange (ONNX) format so that developers can import/export their trained models from RavDL to other frameworks like Tensorflow, Pytorch, Keras, Caffe2 etc.</a></p></li>
-              <li><p align="justify"><a href="https://github.com/ravenprotocol/ravsock" style="color: rgb(255, 255, 255)" target="_blank">Built a Graph Compile-Execute Mechanism from scratch using which a developer can choose which Ops/results they selectively want to save post-execution. Added features for visualizing progress of ongoing training sessions and estimated cost of training in Raven Tokens.</a></p></li>
-              <li><p align="justify"><a href="https://github.com/ravenprotocol/ravdl" style="color: rgb(255, 255, 255)" target="_blank">Working on Raven Protocol's Distributed Deep Learning tool that provides essential abstractions for training complex Deep Learning architectures in the Ravenverse.</a></p></li>
-              <li><p align="justify"><a href="https://github.com/ravenprotocol/ravpy" style="color: rgb(255, 255, 255)" target="_blank">Developed a Python SDK that allows Contributors to intuitively participate in any ongoing MLOPs graph computations in the Ravenverse and get Raven Token rewards in return.</a></p></li>
-              <li><p align="justify"><a href="https://github.com/ravenprotocol/ravsock" style="color: rgb(255, 255, 255)" target="_blank">Implemented an advanced scheduling algorithm that breaks down a Developer's ML model into concurrently computable Operations, and emits them to Contributors across the world based on their available compute power. This paradigm facilitates faster and cheaper training of deep learning models.</a></p></li>
-              <li><p align="justify"><a href="https://medium.com/ravenprotocol/announcing-support-for-federated-analytics-in-raven-distribution-framework-rdf-b0e6efd337f9" style="color: rgb(255, 255, 255)" target="_blank">Built a secure and scalable industry-standard Federated Learning Framework from scratch. Added a layer of Homomorphic Encryption for data privacy.</a></p></li>
+              <li><p align="justify"><a href="https://github.com/ravenprotocol/ravdl" class="link-plain" target="_blank">Added support for saving/loading Deep Learning models in the Open Neural Network Exchange (ONNX) format so that developers can import/export their trained models from RavDL to other frameworks like Tensorflow, Pytorch, Keras, Caffe2 etc.</a></p></li>
+              <li><p align="justify"><a href="https://github.com/ravenprotocol/ravsock" class="link-plain" target="_blank">Built a Graph Compile-Execute Mechanism from scratch using which a developer can choose which Ops/results they selectively want to save post-execution. Added features for visualizing progress of ongoing training sessions and estimated cost of training in Raven Tokens.</a></p></li>
+              <li><p align="justify"><a href="https://github.com/ravenprotocol/ravdl" class="link-plain" target="_blank">Working on Raven Protocol's Distributed Deep Learning tool that provides essential abstractions for training complex Deep Learning architectures in the Ravenverse.</a></p></li>
+              <li><p align="justify"><a href="https://github.com/ravenprotocol/ravpy" class="link-plain" target="_blank">Developed a Python SDK that allows Contributors to intuitively participate in any ongoing MLOPs graph computations in the Ravenverse and get Raven Token rewards in return.</a></p></li>
+              <li><p align="justify"><a href="https://github.com/ravenprotocol/ravsock" class="link-plain" target="_blank">Implemented an advanced scheduling algorithm that breaks down a Developer's ML model into concurrently computable Operations, and emits them to Contributors across the world based on their available compute power. This paradigm facilitates faster and cheaper training of deep learning models.</a></p></li>
+              <li><p align="justify"><a href="https://medium.com/ravenprotocol/announcing-support-for-federated-analytics-in-raven-distribution-framework-rdf-b0e6efd337f9" class="link-plain" target="_blank">Built a secure and scalable industry-standard Federated Learning Framework from scratch. Added a layer of Homomorphic Encryption for data privacy.</a></p></li>
             </ul>
             </p>
           </div>
@@ -465,7 +465,7 @@
             <p><em>Raven Protocol Pte Ltd., Singapore</em></p>
             <p>
             <ul>
-              <li><p align="justify"><a href="https://github.com/ravenprotocol/ravml" style="color: rgb(255, 255, 255)" target="_blank">Implemented and documented a collection of ML algorithms like Regression Models, KNN, SVMs, K-Means, Perceptron and Decision Trees using Raven Distribution Framework.</a></p></li>
+              <li><p align="justify"><a href="https://github.com/ravenprotocol/ravml" class="link-plain" target="_blank">Implemented and documented a collection of ML algorithms like Regression Models, KNN, SVMs, K-Means, Perceptron and Decision Trees using Raven Distribution Framework.</a></p></li>
             </ul>
             </p>
           </div>
@@ -523,7 +523,7 @@
             <p><em>Team Orcus</em></p>
             <p>
             <ul>
-              <li><p align="justify"><a href="https://www.youtube.com/watch?v=_2ArlKlPMQQ" style="color: rgb(255, 255, 255)" target="_blank">Designed a 120 lbs combat robot that finished in top 7 internationally at RoboWars, TechFest'18, IIT Bombay.</a></p></li>
+              <li><p align="justify"><a href="https://www.youtube.com/watch?v=_2ArlKlPMQQ" class="link-plain" target="_blank">Designed a 120 lbs combat robot that finished in top 7 internationally at RoboWars, TechFest'18, IIT Bombay.</a></p></li>
             </ul>
             </p>
           </div>
@@ -992,7 +992,7 @@
       <div class="row mt-2">
         <div class="col-md-6 d-flex align-items-stretch">
           <div class="info-box">
-            <iframe style="filter: invert(90%)" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3888.8547887901727!2d77.64277201439415!3d12.917053090891727!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bae15ac0a595a2b%3A0x278631b87527dce4!2sMatelabs%20Innovations%20Pvt%20Ltd!5e0!3m2!1sen!2sin!4v1632385880275!5m2!1sen!2sin" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+            <iframe class="map-embed" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3888.8547887901727!2d77.64277201439415!3d12.917053090891727!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bae15ac0a595a2b%3A0x278631b87527dce4!2sMatelabs%20Innovations%20Pvt%20Ltd!5e0!3m2!1sen!2sin!4v1632385880275!5m2!1sen!2sin" width="100%" height="100%" allowfullscreen="" loading="lazy"></iframe>
           </div>
         </div>
 
@@ -1037,7 +1037,6 @@
   <!-- Vendor JS Files -->
   <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
-  <script src="assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
   <script src="assets/vendor/php-email-form/validate.js"></script>
   <script src="assets/vendor/purecounter/purecounter.js"></script>
   <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>

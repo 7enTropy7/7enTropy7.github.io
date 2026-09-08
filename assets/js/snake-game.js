@@ -268,36 +268,56 @@ class SnakeGame {
         this.consecutiveActions = 0;
     }
     
+    // Rounded cell, falling back to a square where roundRect is unavailable
+    cellPath(x, y, size, radius) {
+        this.ctx.beginPath();
+        if (this.ctx.roundRect) {
+            this.ctx.roundRect(x, y, size, size, radius);
+        } else {
+            this.ctx.rect(x, y, size, size);
+        }
+        this.ctx.fill();
+    }
+    
     // Enhanced rendering with better visual effects
     render() {
-        // Clear canvas
-        this.ctx.fillStyle = '#000000';
-        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        // Clear canvas — transparent, so the page's ambient background shows through
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         
         // Draw snake with gradient effect
+        const cell = this.gridSize - 3;
+        const radius = 3;
         this.snake.forEach((segment, index) => {
+            const x = segment.x * this.gridSize;
+            const y = segment.y * this.gridSize;
             if (index === 0) {
-                // Head - brighter green with glow effect
-                this.ctx.fillStyle = '#00ff00';
-                this.ctx.fillRect(segment.x * this.gridSize, segment.y * this.gridSize, this.gridSize - 1, this.gridSize - 1);
+                // Head - accent green with a soft glow
+                this.ctx.shadowColor = 'rgba(53, 224, 138, 0.9)';
+                this.ctx.shadowBlur = 12;
+                this.ctx.fillStyle = 'rgb(53, 224, 138)';
             } else {
-                // Body - darker green with slight transparency
-                const alpha = Math.max(0.4, 1 - (index * 0.08));
-                this.ctx.fillStyle = `rgba(0, 255, 0, ${alpha})`;
-                this.ctx.fillRect(segment.x * this.gridSize, segment.y * this.gridSize, this.gridSize - 2, this.gridSize - 2);
+                // Body - fades out along the tail
+                const alpha = Math.max(0.18, 0.85 - (index * 0.05));
+                this.ctx.shadowBlur = 0;
+                this.ctx.fillStyle = `rgba(53, 224, 138, ${alpha})`;
             }
+            this.cellPath(x, y, cell, radius);
         });
+        this.ctx.shadowBlur = 0;
         
         // Draw food with pulsing effect
         const pulse = Math.sin(Date.now() * 0.015) * 0.3 + 0.7;
-        this.ctx.fillStyle = `rgba(255, 0, 0, ${pulse})`;
-        this.ctx.fillRect(this.food.x * this.gridSize, this.food.y * this.gridSize, this.gridSize - 1, this.gridSize - 1);
+        this.ctx.shadowColor = 'rgba(35, 196, 224, 0.9)';
+        this.ctx.shadowBlur = 14;
+        this.ctx.fillStyle = `rgba(35, 196, 224, ${pulse})`;
+        this.cellPath(this.food.x * this.gridSize, this.food.y * this.gridSize, cell, radius);
+        this.ctx.shadowBlur = 0;
         
-        // Draw score and game info
-        this.ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-        this.ctx.font = '12px Arial';
-        this.ctx.fillText(`Score: ${this.score}`, 8, 16);
-        this.ctx.fillText(`Games: ${this.gameCount}`, 8, 32);
+        // Draw score and game info, tucked into the bottom-left away from the nav
+        this.ctx.fillStyle = 'rgba(151, 163, 178, 0.55)';
+        this.ctx.font = '11px ui-monospace, SFMono-Regular, Menlo, monospace';
+        this.ctx.fillText(`score ${this.score}`, 16, this.canvas.height - 34);
+        this.ctx.fillText(`games ${this.gameCount}`, 16, this.canvas.height - 18);
     }
     
     // Faster game loop with adaptive speed
