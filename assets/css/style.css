@@ -927,8 +927,7 @@ section .container:last-child {
 
 .resume .pic video {
   width: 100%;
-  border-radius: var(--radius);
-  border: 1px solid var(--line);
+  height: auto;
 }
 
 /*--------------------------------------------------------------
@@ -989,22 +988,19 @@ section .container:last-child {
   box-shadow: var(--shadow);
 }
 
+/* Tile media ranges from 0.63 (portrait captures) to 2.81 (ultra-wide) — give
+   every tile the same box so rows line up, then fit the media inside it rather
+   than cropping into it. */
 .portfolio .portfolio-item img,
 .portfolio .portfolio-item video {
   display: block;
   width: 100%;
   height: auto;
-  aspect-ratio: 16 / 10;
-  object-fit: cover;
-  transition: transform 0.5s ease;
-}
-
-/* Award artwork is posters and certificates of every aspect ratio — fit the
-   whole thing inside the tile instead of cropping into it. */
-#achievements .portfolio-item img {
+  aspect-ratio: 4 / 3;
   object-fit: contain;
   background: rgba(255, 255, 255, 0.03);
-  padding: 8px;
+  padding: 10px;
+  transition: transform 0.5s ease;
 }
 
 .portfolio .portfolio-wrap:hover,

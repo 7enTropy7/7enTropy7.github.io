@@ -217,6 +217,16 @@
   });
 
   /**
+   * Transparent clips ship as VP9/WebM with an alpha layer. Safari plays that
+   * file but ignores the alpha, so point it at the HEVC build instead.
+   */
+  if (navigator.vendor === 'Apple Computer, Inc.') {
+    select('.alpha-clip', true).forEach((clip) => {
+      clip.src = clip.dataset.hevc
+    })
+  }
+
+  /**
    * Play looping videos only while they are on screen
    */
   let videoObserver = new IntersectionObserver((entries) => {
