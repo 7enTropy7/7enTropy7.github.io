@@ -24,6 +24,7 @@ class SnakeGame {
         this.lastAction = -1;
         this.consecutiveActions = 0;
         this.gameCount = 0;
+        this.best = 0;
         
         // Animation state: motion is interpolated between logic steps
         this.prevSnake = this.snake.map(s => ({x: s.x, y: s.y}));
@@ -235,6 +236,7 @@ class SnakeGame {
         if (!this.gameRunning) return;
         
         this.steps++;
+        this.best = Math.max(this.best, this.snake.length);
         this.prevSnake = this.snake.map(s => ({x: s.x, y: s.y}));
         this.stepStart = performance.now();
         this.stepDuration = Math.max(70 - Math.min(this.score * 3, 40), 30);
@@ -385,11 +387,16 @@ class SnakeGame {
         ctx.fill();
         ctx.shadowBlur = 0;
         
-        // Draw score and game info, tucked into the bottom-left away from the nav
-        ctx.fillStyle = 'rgba(151, 163, 178, 0.7)';
+        // One dim caption rather than a scoreboard — it says what the background
+        // actually is. Centred so it never half-crosses a panel edge: a caption
+        // under the hero, a watermark behind the glass in the other sections.
+        ctx.fillStyle = 'rgba(109, 121, 135, 0.85)';
         ctx.font = '11px ui-monospace, SFMono-Regular, Menlo, monospace';
-        ctx.fillText(`score ${this.score}`, 16, this.height - 34);
-        ctx.fillText(`games ${this.gameCount}`, 16, this.height - 18);
+        ctx.textAlign = 'center';
+        if ('letterSpacing' in ctx) {
+            ctx.letterSpacing = '0.09em';
+        }
+        ctx.fillText(`rl agent · len ${this.snake.length} · best ${this.best}`, this.width / 2, this.height - 20);
     }
     
     // Logic step: speed climbs with the score
