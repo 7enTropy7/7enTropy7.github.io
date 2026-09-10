@@ -7,9 +7,8 @@ class SnakeGame {
     constructor(canvas) {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
-        this.gridSize = 15;
-        this.tileCount = Math.floor(canvas.width / this.gridSize);
-        this.tileCountY = Math.floor(canvas.height / this.gridSize);
+        this.gridSize = 18;
+        this.resize();
         
         // Game state
         this.snake = [{x: Math.floor(this.tileCount/2), y: Math.floor(this.tileCountY/2)}];
@@ -26,8 +25,30 @@ class SnakeGame {
         this.consecutiveActions = 0;
         this.gameCount = 0;
         
-        // Game loop
-        this.gameLoop();
+        // Animation state: motion is interpolated between logic steps
+        this.prevSnake = this.snake.map(s => ({x: s.x, y: s.y}));
+        this.stepStart = performance.now();
+        this.stepDuration = 70;
+        this.deathAt = 0;
+        this.ripples = [];
+        
+        // Loops: logic on a timer, painting on animation frames
+        this.tick();
+        this.renderLoop();
+    }
+    
+    // Size the backing store to the device pixel ratio so cells stay crisp
+    resize() {
+        const dpr = window.devicePixelRatio || 1;
+        this.width = window.innerWidth;
+        this.height = window.innerHeight;
+        this.canvas.width = Math.round(this.width * dpr);
+        this.canvas.height = Math.round(this.height * dpr);
+        this.canvas.style.width = this.width + 'px';
+        this.canvas.style.height = this.height + 'px';
+        this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        this.tileCount = Math.floor(this.width / this.gridSize);
+        this.tileCountY = Math.floor(this.height / this.gridSize);
     }
     
     // Generate food at random position
@@ -207,6 +228,9 @@ class SnakeGame {
         if (!this.gameRunning) return;
         
         this.steps++;
+        this.prevSnake = this.snake.map(s => ({x: s.x, y: s.y}));
+        this.stepStart = performance.now();
+        this.stepDuration = Math.max(70 - Math.min(this.score * 3, 40), 30);
         
         // Choose and execute action
         const action = this.chooseAction();
@@ -239,6 +263,7 @@ class SnakeGame {
         if (head.x === this.food.x && head.y === this.food.y) {
             this.score++;
             this.steps = 0; // Reset step counter
+            this.ripples.push({x: this.food.x, y: this.food.y, t: performance.now()});
             this.food = this.generateFood();
         } else {
             this.snake.pop();
@@ -248,6 +273,7 @@ class SnakeGame {
     // Game over
     gameOver() {
         this.gameRunning = false;
+        this.deathAt = performance.now();
         this.gameCount++;
         // Restart game after a short delay
         setTimeout(() => {
@@ -266,6 +292,8 @@ class SnakeGame {
         this.steps = 0;
         this.lastAction = -1;
         this.consecutiveActions = 0;
+        this.prevSnake = this.snake.map(s => ({x: s.x, y: s.y}));
+        this.ripples = [];
     }
     
     // Rounded cell, falling back to a square where roundRect is unavailable
@@ -279,61 +307,112 @@ class SnakeGame {
         this.ctx.fill();
     }
     
-    // Enhanced rendering with better visual effects
-    render() {
-        // Clear canvas — transparent, so the page's ambient background shows through
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        
-        // Draw snake with gradient effect
-        const cell = this.gridSize - 3;
-        const radius = 3;
-        this.snake.forEach((segment, index) => {
-            const x = segment.x * this.gridSize;
-            const y = segment.y * this.gridSize;
-            if (index === 0) {
-                // Head - accent green with a soft glow
-                this.ctx.shadowColor = 'rgba(53, 224, 138, 0.9)';
-                this.ctx.shadowBlur = 12;
-                this.ctx.fillStyle = 'rgb(53, 224, 138)';
-            } else {
-                // Body - fades out along the tail
-                const alpha = Math.max(0.18, 0.85 - (index * 0.05));
-                this.ctx.shadowBlur = 0;
-                this.ctx.fillStyle = `rgba(53, 224, 138, ${alpha})`;
-            }
-            this.cellPath(x, y, cell, radius);
-        });
-        this.ctx.shadowBlur = 0;
-        
-        // Draw food with pulsing effect
-        const pulse = Math.sin(Date.now() * 0.015) * 0.3 + 0.7;
-        this.ctx.shadowColor = 'rgba(35, 196, 224, 0.9)';
-        this.ctx.shadowBlur = 14;
-        this.ctx.fillStyle = `rgba(35, 196, 224, ${pulse})`;
-        this.cellPath(this.food.x * this.gridSize, this.food.y * this.gridSize, cell, radius);
-        this.ctx.shadowBlur = 0;
-        
-        // Draw score and game info, tucked into the bottom-left away from the nav
-        this.ctx.fillStyle = 'rgba(151, 163, 178, 0.55)';
-        this.ctx.font = '11px ui-monospace, SFMono-Regular, Menlo, monospace';
-        this.ctx.fillText(`score ${this.score}`, 16, this.canvas.height - 34);
-        this.ctx.fillText(`games ${this.gameCount}`, 16, this.canvas.height - 18);
+    // Two dots on the head, facing the direction of travel
+    drawEyes(cx, cy, cell) {
+        const ctx = this.ctx;
+        const off = cell * 0.2;
+        const along = cell * 0.16;
+        const ax = this.dx * along;
+        const ay = this.dy * along;
+        const px = -this.dy * off;
+        const py = this.dx * off;
+        ctx.fillStyle = 'rgba(4, 20, 12, 0.85)';
+        for (const sign of [1, -1]) {
+            ctx.beginPath();
+            ctx.arc(cx + ax + px * sign, cy + ay + py * sign, cell * 0.11, 0, Math.PI * 2);
+            ctx.fill();
+        }
     }
     
-    // Faster game loop with adaptive speed
-    gameLoop() {
-        this.update();
-        this.render();
+    render() {
+        const ctx = this.ctx;
+        const g = this.gridSize;
+        const cell = g - 3;
+        const pad = 1.5;
+        const radius = 5;
+        const now = performance.now();
         
-        if (this.gameRunning) {
-            // Much faster gameplay with adaptive speed
-            const baseSpeed = 50; // Base speed in ms
-            const speedReduction = Math.min(this.score * 2, 30); // Speed up with score
-            const finalSpeed = Math.max(baseSpeed - speedReduction, 20); // Minimum 20ms
-            setTimeout(() => this.gameLoop(), finalSpeed);
-        } else {
-            setTimeout(() => this.gameLoop(), 50); // Very fast restart
+        // Clear canvas — transparent, so the page's ambient background shows through
+        ctx.clearRect(0, 0, this.width, this.height);
+        
+        // Fraction of the way through the current logic step, for smooth gliding
+        const t = Math.min(1, (now - this.stepStart) / this.stepDuration);
+        // Dim briefly on death, then the reset snaps back to full brightness
+        const fade = this.gameRunning ? 1 : Math.max(0.2, 1 - (now - this.deathAt) / 500);
+        
+        // Expanding rings where food was eaten
+        this.ripples = this.ripples.filter(r => now - r.t < 900);
+        ctx.lineWidth = 1.5;
+        for (const r of this.ripples) {
+            const p = (now - r.t) / 900;
+            ctx.strokeStyle = `rgba(35, 196, 224, ${0.55 * (1 - p)})`;
+            ctx.beginPath();
+            ctx.arc(r.x * g + g / 2, r.y * g + g / 2, 5 + p * 55, 0, Math.PI * 2);
+            ctx.stroke();
         }
+        
+        // Snake — accent green at the head easing into cyan down the tail
+        const len = this.snake.length;
+        for (let i = len - 1; i >= 0; i--) {
+            const seg = this.snake[i];
+            const prev = this.prevSnake[Math.min(i, this.prevSnake.length - 1)] || seg;
+            const x = (prev.x + (seg.x - prev.x) * t) * g + pad;
+            const y = (prev.y + (seg.y - prev.y) * t) * g + pad;
+            const k = Math.min(i / 18, 1);
+            const r = Math.round(53 + (35 - 53) * k);
+            const gr = Math.round(224 + (196 - 224) * k);
+            const b = Math.round(138 + (224 - 138) * k);
+            
+            if (i === 0) {
+                ctx.shadowColor = 'rgba(53, 224, 138, 0.95)';
+                ctx.shadowBlur = 22;
+                ctx.fillStyle = `rgba(120, 255, 190, ${fade})`;
+                this.cellPath(x, y, cell, radius);
+                ctx.shadowBlur = 0;
+                this.drawEyes(x + cell / 2, y + cell / 2, cell);
+            } else {
+                ctx.fillStyle = `rgba(${r}, ${gr}, ${b}, ${fade * (0.92 - k * 0.42)})`;
+                this.cellPath(x, y, cell, radius);
+            }
+        }
+        
+        // Food — a pulsing core inside a soft halo
+        const pulse = Math.sin(now * 0.005) * 0.5 + 0.5;
+        const fx = this.food.x * g + g / 2;
+        const fy = this.food.y * g + g / 2;
+        const halo = ctx.createRadialGradient(fx, fy, 0, fx, fy, g * (1.6 + pulse * 0.5));
+        halo.addColorStop(0, `rgba(35, 196, 224, ${0.35 + pulse * 0.2})`);
+        halo.addColorStop(1, 'rgba(35, 196, 224, 0)');
+        ctx.fillStyle = halo;
+        ctx.beginPath();
+        ctx.arc(fx, fy, g * (1.6 + pulse * 0.5), 0, Math.PI * 2);
+        ctx.fill();
+        
+        ctx.shadowColor = 'rgba(35, 196, 224, 0.95)';
+        ctx.shadowBlur = 18;
+        ctx.fillStyle = `rgba(160, 240, 255, ${0.75 + pulse * 0.25})`;
+        ctx.beginPath();
+        ctx.arc(fx, fy, cell * (0.3 + pulse * 0.1), 0, Math.PI * 2);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+        
+        // Draw score and game info, tucked into the bottom-left away from the nav
+        ctx.fillStyle = 'rgba(151, 163, 178, 0.7)';
+        ctx.font = '11px ui-monospace, SFMono-Regular, Menlo, monospace';
+        ctx.fillText(`score ${this.score}`, 16, this.height - 34);
+        ctx.fillText(`games ${this.gameCount}`, 16, this.height - 18);
+    }
+    
+    // Logic step: speed climbs with the score
+    tick() {
+        this.update();
+        setTimeout(() => this.tick(), this.gameRunning ? this.stepDuration : 60);
+    }
+    
+    // Paint every frame so glows and motion stay smooth between steps
+    renderLoop() {
+        this.render();
+        requestAnimationFrame(() => this.renderLoop());
     }
 }
 
@@ -342,8 +421,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Create canvas element
     const canvas = document.createElement('canvas');
     canvas.id = 'snake-game-canvas';
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
     canvas.style.position = 'fixed';
     canvas.style.top = '0';
     canvas.style.left = '0';
@@ -358,9 +435,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Handle window resize
     window.addEventListener('resize', function() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        snakeGame.tileCount = Math.floor(canvas.width / snakeGame.gridSize);
-        snakeGame.tileCountY = Math.floor(canvas.height / snakeGame.gridSize);
+        snakeGame.resize();
     });
 });
