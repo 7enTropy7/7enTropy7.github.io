@@ -11,7 +11,7 @@ class SnakeGame {
         this.resize();
         
         // Game state
-        this.snake = [{x: Math.floor(this.tileCount/2), y: Math.floor(this.tileCountY/2)}];
+        this.snake = this.startingSnake();
         this.food = this.generateFood();
         this.dx = 0;
         this.dy = 0;
@@ -49,6 +49,13 @@ class SnakeGame {
         this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
         this.tileCount = Math.floor(this.width / this.gridSize);
         this.tileCountY = Math.floor(this.height / this.gridSize);
+    }
+    
+    // Five segments in a row from the middle of the board, head first
+    startingSnake() {
+        const x = Math.floor(this.tileCount / 2);
+        const y = Math.floor(this.tileCountY / 2);
+        return [0, 1, 2, 3, 4].map(i => ({x: x - i, y: y}));
     }
     
     // Generate food at random position
@@ -283,7 +290,7 @@ class SnakeGame {
     
     // Reset game
     reset() {
-        this.snake = [{x: Math.floor(this.tileCount/2), y: Math.floor(this.tileCountY/2)}];
+        this.snake = this.startingSnake();
         this.food = this.generateFood();
         this.dx = 0;
         this.dy = 0;
@@ -305,23 +312,6 @@ class SnakeGame {
             this.ctx.rect(x, y, size, size);
         }
         this.ctx.fill();
-    }
-    
-    // Two dots on the head, facing the direction of travel
-    drawEyes(cx, cy, cell) {
-        const ctx = this.ctx;
-        const off = cell * 0.2;
-        const along = cell * 0.16;
-        const ax = this.dx * along;
-        const ay = this.dy * along;
-        const px = -this.dy * off;
-        const py = this.dx * off;
-        ctx.fillStyle = 'rgba(4, 20, 12, 0.85)';
-        for (const sign of [1, -1]) {
-            ctx.beginPath();
-            ctx.arc(cx + ax + px * sign, cy + ay + py * sign, cell * 0.11, 0, Math.PI * 2);
-            ctx.fill();
-        }
     }
     
     render() {
@@ -369,7 +359,6 @@ class SnakeGame {
                 ctx.fillStyle = `rgba(120, 255, 190, ${fade})`;
                 this.cellPath(x, y, cell, radius);
                 ctx.shadowBlur = 0;
-                this.drawEyes(x + cell / 2, y + cell / 2, cell);
             } else {
                 ctx.fillStyle = `rgba(${r}, ${gr}, ${b}, ${fade * (0.92 - k * 0.42)})`;
                 this.cellPath(x, y, cell, radius);
