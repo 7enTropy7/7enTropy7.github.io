@@ -688,15 +688,35 @@ section .panel-row > .panel {
 /*--------------------------------------------------------------
 # Skills
 --------------------------------------------------------------*/
+/* Six tracks: cards take a third by default, wide cards two thirds, half cards half */
 .skills .skills-content {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   gap: 16px;
+}
+
+.skills .skills-content > .skill-group {
+  grid-column: span 2;
+}
+
+.skills .skills-content > .skill-wide {
+  grid-column: span 4;
+}
+
+.skills .skills-content > .skill-half {
+  grid-column: span 3;
 }
 
 @media (max-width: 991px) {
   .skills .skills-content {
     grid-template-columns: repeat(2, 1fr);
+  }
+  .skills .skills-content > .skill-group {
+    grid-column: auto;
+  }
+  .skills .skills-content > .skill-wide,
+  .skills .skills-content > .skill-wide-md {
+    grid-column: 1 / -1;
   }
 }
 
@@ -899,6 +919,14 @@ section .panel-row > .panel {
 .skills .logo-raspberrypi { --logo: url(../img/skills/raspberrypi.svg); }
 .skills .logo-nvidia { --logo: url(../img/skills/nvidia.svg); }
 .skills .logo-arduino { --logo: url(../img/skills/arduino.svg); }
+.skills .logo-modelcontextprotocol { --logo: url(../img/skills/modelcontextprotocol.svg); }
+.skills .logo-claude { --logo: url(../img/skills/claude.svg); }
+.skills .logo-google { --logo: url(../img/skills/google.svg); }
+.skills .logo-vllm { --logo: url(../img/skills/vllm.svg); }
+.skills .logo-redis { --logo: url(../img/skills/redis.svg); }
+.skills .logo-fastapi { --logo: url(../img/skills/fastapi.svg); }
+.skills .logo-docker { --logo: url(../img/skills/docker.svg); }
+.skills .logo-kubernetes { --logo: url(../img/skills/kubernetes.svg); }
 
 /*--------------------------------------------------------------
 # Interests
