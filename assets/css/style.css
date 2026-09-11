@@ -487,7 +487,8 @@ section.section-show {
   padding-bottom: 60px;
 }
 
-section .container {
+section .container,
+section .panel {
   /* Kept translucent and lightly blurred so the snake reads through the glass */
   background: rgba(6, 9, 13, 0.34);
   backdrop-filter: blur(7px) saturate(155%) brightness(1.55);
@@ -503,6 +504,30 @@ section .container:last-child {
   margin-bottom: 0;
 }
 
+/* A bare container that lays sibling panels out side by side */
+section .container.panel-row {
+  display: grid;
+  gap: 26px;
+  padding: 0;
+  background: none;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+section .panel-row > .panel {
+  min-width: 0;
+  margin-bottom: 0;
+}
+
+@media (min-width: 1200px) {
+  section .container.panel-row {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
 @media (max-width: 768px) {
   section {
     top: 120px;
@@ -510,7 +535,8 @@ section .container:last-child {
   section.section-show {
     top: 76px;
   }
-  section .container {
+  section .container,
+  section .panel {
     padding: 22px 18px;
     border-radius: 16px;
   }
@@ -588,31 +614,15 @@ section .container:last-child {
   box-shadow: var(--shadow);
 }
 
-.about-me .content ul {
-  list-style: none;
-  padding: 0;
-  margin-top: 22px;
-}
-
-.about-me .content ul li {
-  margin-bottom: 14px;
-  display: flex;
-  align-items: center;
-  font-size: 14px;
-  color: var(--muted);
-}
-
-.about-me .content ul strong {
-  margin-right: 8px;
-  color: var(--text);
-  font-weight: 600;
-}
-
-.about-me .content ul i {
-  font-size: 14px;
-  margin-right: 8px;
-  color: var(--accent);
-  line-height: 0;
+/* Beside the bio, stretch the photo to the height of the text column */
+@media (min-width: 992px) {
+  .about-me .row > .col-lg-4 {
+    display: flex;
+  }
+  .about-me .col-lg-4 img {
+    height: 100%;
+    max-height: none;
+  }
 }
 
 .about-me .content p:last-child {
@@ -623,15 +633,18 @@ section .container:last-child {
 # Counts
 --------------------------------------------------------------*/
 .counts {
-  padding: 0;
+  margin-top: 30px;
+  padding-top: 30px;
+  border-top: 1px solid var(--line);
 }
 
 .counts .row {
-  row-gap: 22px;
+  --bs-gutter-x: 16px;
+  row-gap: 16px;
 }
 
 .counts .count-box {
-  padding: 26px 22px 22px;
+  padding: 20px 16px 18px;
   width: 100%;
   position: relative;
   text-align: center;
@@ -675,60 +688,245 @@ section .container:last-child {
 /*--------------------------------------------------------------
 # Skills
 --------------------------------------------------------------*/
-.skills .progress {
-  height: auto;
-  display: block;
-  background: none;
-  border-radius: 0;
-  margin-bottom: 22px;
+.skills .skills-content {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
 }
 
-.skills .progress .skill {
-  padding: 0 0 10px;
+@media (max-width: 991px) {
+  .skills .skills-content {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 575px) {
+  .skills .skills-content {
+    grid-template-columns: 1fr;
+  }
+}
+
+.skills .skill-group {
+  --hue: var(--accent);
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: 22px;
+  background: var(--surface);
+  background:
+    radial-gradient(120% 90% at 0% 0%, color-mix(in srgb, var(--hue) 13%, transparent), transparent 60%),
+    var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Hairline of the category colour along the top edge */
+.skills .skill-group::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 2px;
+  background: linear-gradient(90deg, var(--hue), transparent 75%);
+  opacity: 0.8;
+}
+
+.skills .skill-group:hover {
+  transform: translateY(-4px);
+  border-color: color-mix(in srgb, var(--hue) 45%, transparent);
+  box-shadow: 0 22px 44px -26px color-mix(in srgb, var(--hue) 70%, transparent);
+}
+
+.skills .skill-watermark {
+  position: absolute;
+  right: -18px;
+  bottom: -30px;
+  z-index: -1;
+  font-size: 120px;
+  line-height: 1;
+  color: var(--hue);
+  opacity: 0.06;
+  transform: rotate(-12deg);
+  transition: transform 0.5s ease, opacity 0.5s ease;
+  pointer-events: none;
+}
+
+.skills .skill-group:hover .skill-watermark {
+  opacity: 0.13;
+  transform: rotate(0deg) scale(1.06);
+}
+
+.skills .skill-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.skills .skill-head i {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 42px;
+  height: 42px;
+  font-size: 22px;
+  line-height: 1;
+  color: var(--hue);
+  background: color-mix(in srgb, var(--hue) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--hue) 35%, transparent);
+  border-radius: 12px;
+  box-shadow: 0 0 26px -8px color-mix(in srgb, var(--hue) 60%, transparent);
+}
+
+.skills .skill-head h4 {
   margin: 0;
-  text-transform: none;
-  display: block;
   font-weight: 600;
-  font-size: 14px;
-  letter-spacing: 0.01em;
+  font-size: 17px;
+  letter-spacing: -0.01em;
   font-family: var(--font-head);
   color: var(--text);
 }
 
-.skills .progress .skill .val {
-  float: right;
-  font-style: normal;
-  color: var(--accent);
-  font-variant-numeric: tabular-nums;
-}
-
-.skills .progress-bar-wrap {
-  background: rgba(255, 255, 255, 0.08);
+/* "Now" tag on the categories of current work */
+.skills .skill-now {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  padding: 2px 10px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-family: var(--font-head);
+  color: var(--hue);
+  background: color-mix(in srgb, var(--hue) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--hue) 30%, transparent);
   border-radius: var(--radius-pill);
-  overflow: hidden;
 }
 
-.skills .progress-bar {
-  width: 1px;
+.skills .skill-now::before {
+  content: "";
+  width: 6px;
   height: 6px;
-  border-radius: var(--radius-pill);
-  transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1);
-  background: var(--gradient);
-  box-shadow: var(--glow);
+  border-radius: 50%;
+  background: var(--hue);
+  animation: skill-pulse 2s ease-out infinite;
 }
+
+@keyframes skill-pulse {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--hue) 70%, transparent);
+  }
+  70%, 100% {
+    box-shadow: 0 0 0 6px transparent;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skills .skill-now::before {
+    animation: none;
+  }
+}
+
+.skills .skill-group ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.skills .skill-group li {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 13px 6px 9px;
+  font-size: 13.5px;
+  line-height: 1.4;
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  transition: ease-in-out 0.2s;
+}
+
+.skills .skill-group li:hover {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--hue) 45%, transparent);
+  background: color-mix(in srgb, var(--hue) 12%, transparent);
+}
+
+/* Brand logos are single-colour SVG masks tinted with the category colour */
+.skills .logo {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  background-color: var(--hue);
+  -webkit-mask: var(--logo) center / contain no-repeat;
+  mask: var(--logo) center / contain no-repeat;
+}
+
+/* Letter badge for tools without a public logo */
+.skills .logo.mono {
+  display: grid;
+  place-items: center;
+  border-radius: 5px;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  font-family: var(--font-head);
+  color: var(--ink);
+  -webkit-mask: none;
+  mask: none;
+}
+
+.skills .logo-python { --logo: url(../img/skills/python.svg); }
+.skills .logo-cplusplus { --logo: url(../img/skills/cplusplus.svg); }
+.skills .logo-langgraph { --logo: url(../img/skills/langgraph.svg); }
+.skills .logo-langchain { --logo: url(../img/skills/langchain.svg); }
+.skills .logo-crewai { --logo: url(../img/skills/crewai.svg); }
+.skills .logo-qdrant { --logo: url(../img/skills/qdrant.svg); }
+.skills .logo-ollama { --logo: url(../img/skills/ollama.svg); }
+.skills .logo-pytorch { --logo: url(../img/skills/pytorch.svg); }
+.skills .logo-tensorflow { --logo: url(../img/skills/tensorflow.svg); }
+.skills .logo-keras { --logo: url(../img/skills/keras.svg); }
+.skills .logo-onnx { --logo: url(../img/skills/onnx.svg); }
+.skills .logo-socketdotio { --logo: url(../img/skills/socketdotio.svg); }
+.skills .logo-flask { --logo: url(../img/skills/flask.svg); }
+.skills .logo-sqlalchemy { --logo: url(../img/skills/sqlalchemy.svg); }
+.skills .logo-raspberrypi { --logo: url(../img/skills/raspberrypi.svg); }
+.skills .logo-nvidia { --logo: url(../img/skills/nvidia.svg); }
+.skills .logo-arduino { --logo: url(../img/skills/arduino.svg); }
 
 /*--------------------------------------------------------------
 # Interests
 --------------------------------------------------------------*/
-.interests .row {
-  row-gap: 20px;
+.interests .interests-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: 1fr;
+  gap: 12px;
+}
+
+@media (max-width: 991px) {
+  .interests .interests-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1200px) {
+  .panel-row .interests .interests-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 .interests .icon-box {
   display: flex;
   align-items: center;
   gap: 14px;
-  padding: 18px 20px;
+  padding: 14px 18px;
   height: 100%;
   background: var(--surface);
   border: 1px solid var(--line);
@@ -757,21 +955,43 @@ section .container:last-child {
   transform: translateY(-3px);
 }
 
+/* Two columns of stacked icon-over-label tiles on phones */
+@media (max-width: 575px) {
+  .interests .interests-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .interests .icon-box {
+    flex-direction: column;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 10px;
+    text-align: center;
+  }
+  .interests .icon-box h3 {
+    font-size: 14px;
+  }
+}
+
 /*--------------------------------------------------------------
 # Testimonials
 --------------------------------------------------------------*/
+/* Quote on top, then the author's photo beside their name and titles */
 .testimonials .testimonial-item {
-  box-sizing: content-box;
-  min-height: 320px;
-  padding-top: 10px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 16px;
+  align-content: start;
+  padding-top: 4px;
 }
 
 .testimonials .testimonial-item .testimonial-img {
-  width: 76px;
-  height: 76px;
+  grid-row: span 4;
+  align-self: center;
+  width: 64px;
+  height: 64px;
   object-fit: cover;
   border-radius: 50%;
-  margin: 0 0 0 34px;
+  margin: 0 0 0 8px;
   position: relative;
   z-index: 2;
   border: 2px solid var(--accent-line);
@@ -779,17 +999,19 @@ section .container:last-child {
 }
 
 .testimonials .testimonial-item h3 {
+  grid-column: 2;
   font-size: 17px;
   font-weight: 600;
-  margin: 14px 0 3px 34px;
+  margin: 0 0 3px;
   color: var(--text);
 }
 
 .testimonials .testimonial-item h4 {
+  grid-column: 2;
   font-size: 13px;
   color: var(--muted);
   font-weight: 400;
-  margin: 0 0 0 34px;
+  margin: 0;
 }
 
 .testimonials .testimonial-item .quote-icon-left, .testimonials .testimonial-item .quote-icon-right {
@@ -811,8 +1033,9 @@ section .container:last-child {
 }
 
 .testimonials .testimonial-item p {
+  grid-column: 1 / -1;
   font-style: italic;
-  margin: 18px 8px 0;
+  margin: 0 0 20px;
   padding: 26px 26px 40px;
   background: var(--surface);
   border: 1px solid var(--line);
