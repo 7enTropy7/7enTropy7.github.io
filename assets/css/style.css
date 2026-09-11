@@ -270,6 +270,8 @@ p {
   }
   #header .social-links {
     margin-top: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
   }
   #header .container {
     display: flex;
@@ -286,11 +288,23 @@ p {
   left: 0;
   top: 0;
   right: 0;
+  border-bottom: 1px solid transparent;
+  overflow: visible;
+}
+
+/* The glass sits on a pseudo-element: a backdrop-filter on #header itself would
+   make it the containing block for the fixed mobile menu, squeezing the menu
+   into the 60px bar. It reaches over the header's (transparent) border so the
+   hairline is drawn on top of the glass, as before. */
+#header.header-top::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 -1px 0;
+  z-index: -1;
+  border-bottom: 1px solid var(--line);
   background: rgba(5, 7, 10, 0.78);
   backdrop-filter: blur(16px) saturate(140%);
   -webkit-backdrop-filter: blur(16px) saturate(140%);
-  border-bottom: 1px solid var(--line);
-  overflow: visible;
 }
 
 #header.header-top .social-links, #header.header-top h2 {
@@ -1082,6 +1096,18 @@ section .container:last-child {
   inset: 0;
 }
 
+/* In the one-column layout rows are sized by content, so pinned media would
+   leave these tiles with no height at all */
+@media (max-width: 575px) {
+  .portfolio .portfolio-item > p {
+    height: auto;
+  }
+  .portfolio .portfolio-item > p > a > img,
+  .portfolio .portfolio-item > p > a > video {
+    position: static;
+  }
+}
+
 /* Every tile — wrapped or bare — gets the same frame */
 .portfolio .portfolio-wrap,
 .portfolio .portfolio-item > a {
@@ -1208,6 +1234,17 @@ section .container:last-child {
 .portfolio .portfolio-wrap:hover .portfolio-info {
   opacity: 1;
   transform: translateY(0);
+}
+
+/* Touch screens have no hover, so keep the caption and its links showing */
+@media (hover: none) {
+  .portfolio .portfolio-wrap::before {
+    opacity: 1;
+  }
+  .portfolio .portfolio-wrap .portfolio-info {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 /*--------------------------------------------------------------
